@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const Search = () => {
-  const [term, setTerm] = useState("");
+  const [term, setTerm] = useState("programming");
   const [results, setResults] = useState([]);
 
   useEffect(() => {
@@ -18,18 +18,35 @@ const Search = () => {
       });
       setResults(data.query.search);
     };
-    if (term) {
+
+    if (term && !results.length) {
       search();
+    } else {
+      const timeOutId = setTimeout(() => {
+        if (term) {
+          search();
+        }
+      }, 1000);
+      return () => {
+        clearTimeout(timeOutId);
+      };
     }
   }, [term]);
 
-
   const renderedllist = results.map((result) => {
     return (
-      <div className="item">
+      <div key={result.pageId} className="item">
+        <div className="right floated content">
+          <a
+            className="ui button"
+            href={`https://en.wikipedia.org?curid=${result.pageid}`}
+          >
+            Go
+          </a>
+        </div>
         <div className="content">
           <div className="header">{result.title}</div>
-          {result.snippet}
+          <span dangerouslySetInnerHTML={{ __html: result.snippet }}></span>
         </div>
       </div>
     );
@@ -48,7 +65,7 @@ const Search = () => {
           />
         </div>
       </div>
-      {renderedllist}
+      <div className="ui celled list">{renderedllist}</div>
     </div>
   );
 };
