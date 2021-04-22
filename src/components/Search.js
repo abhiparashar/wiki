@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const Search = () => {
-  const [term, setTerm] = useState("programming");
+  const [term, setTerm] = useState("");
   const [results, setResults] = useState([]);
 
   useEffect(() => {
@@ -18,12 +18,11 @@ const Search = () => {
       });
       setResults(data.query.search);
     };
-    search();
+    if (term) {
+      search();
+    }
   }, [term]);
 
-  const changeHandler = (e) => {
-    setTerm(e.target.value);
-  };
 
   const renderedllist = results.map((result) => {
     return (
@@ -45,7 +44,7 @@ const Search = () => {
             className="input"
             type="text"
             value={term}
-            onChange={(e) => changeHandler(e)}
+            onChange={(e) => setTerm(e.target.value)}
           />
         </div>
       </div>
